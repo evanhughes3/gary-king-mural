@@ -1,23 +1,38 @@
-//
-//  ViewController.swift
-//  GaryKingMural
-//
-//  Created by Evan Hughes on 1/20/18.
-//  Copyright © 2018 Evan Hughes. All rights reserved.
-//
-
 import UIKit
+import ARKit
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var sceneView: ARSCNView!
+
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        addMural()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        let configuration = ARWorldTrackingConfiguration()
+        self.sceneView.session.run(configuration)
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.sceneView.session.pause()
+    }
+
+    func addMural() {
+        let plane = SCNPlane(width: 0.1, height: 0.2)
+        let material = SCNMaterial()
+        material.diffuse.contents = #imageLiteral(resourceName: "garyMural");
+        plane.materials = [material]
+        let planeNode = SCNNode(geometry: plane)
+        planeNode.position = SCNVector3(0,0,-0.5)
+
+        let scene = SCNScene()
+        scene.rootNode.addChildNode(planeNode)
+        self.sceneView.scene = scene
     }
 
 
